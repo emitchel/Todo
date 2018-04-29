@@ -22,7 +22,9 @@ import android.widget.ListView;
 import com.kylehanish.todo.adapters.TodoItemArrayAdapter;
 import com.kylehanish.todo.classes.TodoItem;
 import com.kylehanish.todo.fragments.TodoDialogFragment;
+import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
 import com.kylehanish.todo.repository.TodoRepository;
+import com.kylehanish.todo.repository.iTodoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity implements TodoDialogFragment.TodoDialogListener {
+public class MainActivity extends AppCompatActivity implements iTodoItemChangeListener {
 
 
 //    Views
@@ -45,14 +47,12 @@ public class MainActivity extends AppCompatActivity implements TodoDialogFragmen
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
-
 //    Page Variables
     private Context mContext;
     private Unbinder mUnbinder;
     private TodoItemArrayAdapter mAdapter;
     private List<TodoItem> mTodoItems;
-    private TodoRepository mRepository;
+    private iTodoRepository mRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements TodoDialogFragmen
         mRepository = new TodoRepository();
         mTodoItems = mRepository.getTodoItems(this);
 
-        mAdapter = new TodoItemArrayAdapter(this,R.layout.list_item_todo, mTodoItems);
+        mAdapter = new TodoItemArrayAdapter(this,R.layout.list_item_todo, mTodoItems,this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -89,32 +89,27 @@ public class MainActivity extends AppCompatActivity implements TodoDialogFragmen
 //        return true;
 //    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    @Override
+    public void SaveTodoItem(TodoItem item, Integer position) {
+        if(position == null){
+            //new item is being addeed
+            mTodoItems.add(item);
+        }else{
+            //editing an existing item
+            mTodoItems.set(position,item);
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void getTODOItemDialog(){
-        new TodoDialogFragment().show(getFragmentManager(),TodoDialogFragment.TAG);
-    }
-
-    @Override
-    public void onTodoSave(TodoItem item) {
-        mTodoItems.add(item);
         mRepository.saveTodoItems(mTodoItems,mContext);
         mAdapter.notifyDataSetChanged();
     }
-
-
-
 }

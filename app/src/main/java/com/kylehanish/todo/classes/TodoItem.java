@@ -1,8 +1,7 @@
 package com.kylehanish.todo.classes;
 
-import android.support.annotation.ColorRes;
-
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Kyle Hanish on 4/29/18.
@@ -35,15 +34,29 @@ public class TodoItem implements Serializable{
         Completed = completed;
     }
 
+    public Date getCreatedOn() {
+        return CreatedOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        CreatedOn = createdOn;
+    }
+
+    public Date getLastEditedOn() {
+        return LastEditedOn;
+    }
+
+    public void setLastEditedOn(Date lastEditedOn) {
+        LastEditedOn = lastEditedOn;
+    }
+
+    private Date CreatedOn;
+    private Date LastEditedOn;
     private int ID;
     private String Description;
     private boolean Completed;
 
     public TodoItem(){}
-    public TodoItem(String Description, boolean Completed){
-        this.Description = Description;
-        this.Completed = Completed;
-    }
 
 
 }

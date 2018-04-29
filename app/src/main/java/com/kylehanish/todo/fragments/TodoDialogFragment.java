@@ -15,6 +15,10 @@ import android.widget.EditText;
 
 import com.kylehanish.todo.R;
 import com.kylehanish.todo.classes.TodoItem;
+import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +38,7 @@ public class TodoDialogFragment extends DialogFragment {
     public static final String TAG = TodoDialogFragment.class.getSimpleName();
 
     private Unbinder mUnbinder;
-    private TodoDialogListener mListener;
+    private iTodoItemChangeListener mListener;
 
 
     @NonNull
@@ -49,7 +53,11 @@ public class TodoDialogFragment extends DialogFragment {
              @Override
              public void onClick(DialogInterface dialog, int which) {
                  String test = inputDescription.getText().toString();
-                 mListener.onTodoSave(new TodoItem(inputDescription.getText().toString(),false));
+                 TodoItem newItem = new TodoItem();
+                 newItem.setCreatedOn(new Date());
+                 newItem.setDescription(inputDescription.getText().toString());
+
+                 mListener.SaveTodoItem(newItem,null);
              }
          });
 
@@ -70,10 +78,10 @@ public class TodoDialogFragment extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mListener = (TodoDialogListener) context;
+            mListener = (iTodoItemChangeListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement TodoDialogListener");
+                    + " must implement iTodoItemChangeListener");
         }
     }
 
@@ -95,12 +103,5 @@ public class TodoDialogFragment extends DialogFragment {
         mUnbinder.unbind();
     }
 
-
-
-
-
-    public interface TodoDialogListener {
-        void onTodoSave(TodoItem item);
-    }
 
 }

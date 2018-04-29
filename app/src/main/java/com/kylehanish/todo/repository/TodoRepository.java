@@ -22,6 +22,13 @@ public class TodoRepository implements iTodoRepository {
 
     private static final String TODO_ITEMS_KEY = "TODO_ITEMS";
 
+
+    /**
+     * Get all TODO items from the repository
+     *
+     * @param context
+     * @return
+     */
     @Override
     public List<TodoItem> getTodoItems(Context context) {
 
@@ -35,8 +42,17 @@ public class TodoRepository implements iTodoRepository {
         return new ArrayList<>();
     }
 
+    /**
+     *Save a list of TODO Items to the repository
+     *
+     * @param todoItems
+     * @param context
+     */
     @Override
     public void saveTodoItems(List<TodoItem> todoItems, Context context) {
+
+        //Todo: Move away from Shared preferences
+        // Add Ability to save single item instead of all items
 
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_APP_KEY,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

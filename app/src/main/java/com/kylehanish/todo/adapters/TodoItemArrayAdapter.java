@@ -2,18 +2,20 @@ package com.kylehanish.todo.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.kylehanish.todo.R;
 import com.kylehanish.todo.classes.TodoItem;
+import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
+import com.kylehanish.todo.repository.iTodoRepository;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,10 +29,12 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
     private Context mContext;
     private List<TodoItem> mItems;
+    private iTodoItemChangeListener mListener;
 
-    public TodoItemArrayAdapter(Context context, int resource, List<TodoItem> items){
+    public TodoItemArrayAdapter(Context context, int resource, List<TodoItem> items, iTodoItemChangeListener itemChangeListener){
         mContext = context;
         mItems = items;
+        mListener = itemChangeListener;
     }
 
     @NonNull
@@ -49,7 +53,9 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
         }
 
         holder.finished.setChecked(currentItem.isCompleted());
+        holder.finished.setTag(position);
         holder.textDescription.setText(currentItem.getDescription());
+        holder.finished.setOnCheckedChangeListener(checkboxOnClickListener);
     }
 
     @Override
@@ -59,6 +65,22 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
         }
         return 0;
     }
+
+    private CompoundButton.OnCheckedChangeListener checkboxOnClickListener = new CompoundButton.OnCheckedChangeListener(){
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int position = (int) buttonView.getTag();
+            TodoItem clickedItem = mItems.get(position);
+
+            clickedItem.setCompleted(isChecked);
+            clickedItem.setLastEditedOn(new Date());
+            mListener.SaveTodoItem(clickedItem,position);
+
+        }
+    };
+
+
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.description)
