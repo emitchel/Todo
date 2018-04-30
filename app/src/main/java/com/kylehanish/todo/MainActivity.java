@@ -13,11 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kylehanish.todo.adapters.TodoItemArrayAdapter;
 import com.kylehanish.todo.classes.TodoItem;
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.empty_todo_list)
+    TextView emptyTodoList;
+
 //    Page Variables
     private Context mContext;
     private Unbinder mUnbinder;
@@ -73,13 +78,24 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
             }
         });
 
-
         mRepository = new TodoRepository();
         mTodoItems = mRepository.getTodoItems(this);
-
         mAdapter = new TodoItemArrayAdapter(this,R.layout.list_item_todo, mTodoItems,this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(mTodoItems == null){
+            mTodoItems = mRepository.getTodoItems(this);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        SetListVisibilty();
+
     }
 
 
@@ -99,6 +115,23 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
 //        return super.onOptionsItemSelected(item);
 //    }
 
+    private void SetListVisibilty(){
+
+        if(mTodoItems != null && mTodoItems.size() >0){
+            if(recyclerView.getVisibility() == View.GONE){
+                emptyTodoList.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        }else{
+            if(recyclerView.getVisibility() == View.VISIBLE){
+                emptyTodoList.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
+
     @Override
     public void SaveTodoItem(TodoItem item, Integer position) {
         if(position == null){
@@ -111,5 +144,18 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
 
         mRepository.saveTodoItems(mTodoItems,mContext);
         mAdapter.notifyDataSetChanged();
+
+        SetListVisibilty();
+
+    }
+
+    @Override
+    public void DeleteItem(int position) {
+        if(mTodoItems.size() > 0 && position >= 0 && position < mTodoItems.size() ){
+            mTodoItems.remove(position);
+            mAdapter.notifyDataSetChanged();
+
+            SetListVisibilty();
+        }
     }
 }

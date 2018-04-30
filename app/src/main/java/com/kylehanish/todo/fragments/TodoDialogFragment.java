@@ -52,7 +52,6 @@ public class TodoDialogFragment extends DialogFragment {
          builder.setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
              @Override
              public void onClick(DialogInterface dialog, int which) {
-                 String test = inputDescription.getText().toString();
                  TodoItem newItem = new TodoItem();
                  newItem.setCreatedOn(new Date());
                  newItem.setDescription(inputDescription.getText().toString());

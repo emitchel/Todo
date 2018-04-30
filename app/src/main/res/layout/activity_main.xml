@@ -19,14 +19,25 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-
+    
     <android.support.v7.widget.RecyclerView
         android:id="@+id/items_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/light_gray_grey"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </android.support.v7.widget.RecyclerView>
+
+
+    <TextView
+        android:id="@+id/empty_todo_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/empty_todo_list"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         app:layout_behavior=".events.ScrollingFABBehavior"

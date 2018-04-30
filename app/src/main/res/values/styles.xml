@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@style/AppTheme.TextView</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,6 +19,10 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
+    <style name="AppTheme.TextView" parent="android:Widget.TextView">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="AppTheme.FloatingActionButton" parent="Widget.Design.FloatingActionButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height" >wrap_content</item>
@@ -25,5 +31,14 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_margin">@dimen/fab_margin</item>
     </style>
+
+    <style name="AppTheme.ListItem" >
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
 
 </resources>

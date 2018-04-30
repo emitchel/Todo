@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import com.kylehanish.todo.R;
@@ -46,6 +48,9 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.finished.setOnCheckedChangeListener(null);
+        holder.delete.setOnClickListener(null);
+
         TodoItem currentItem = mItems.get(position);
 
         if(currentItem == null){
@@ -54,8 +59,13 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
         holder.finished.setChecked(currentItem.isCompleted());
         holder.finished.setTag(position);
-        holder.textDescription.setText(currentItem.getDescription());
         holder.finished.setOnCheckedChangeListener(checkboxOnClickListener);
+
+        holder.textDescription.setText(currentItem.getDescription());
+
+        holder.delete.setTag(position);
+        holder.delete.setOnClickListener(DeleteOnClickListener);
+
     }
 
     @Override
@@ -70,13 +80,25 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            int position = (int) buttonView.getTag();
-            TodoItem clickedItem = mItems.get(position);
+            if(mListener != null){
+                int position = (int) buttonView.getTag();
+                TodoItem clickedItem = mItems.get(position);
 
-            clickedItem.setCompleted(isChecked);
-            clickedItem.setLastEditedOn(new Date());
-            mListener.SaveTodoItem(clickedItem,position);
+                clickedItem.setCompleted(isChecked);
+                clickedItem.setLastEditedOn(new Date());
+                mListener.SaveTodoItem(clickedItem,position);
+            }
+        }
+    };
 
+
+
+    private View.OnClickListener DeleteOnClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if(mListener != null){
+                mListener.DeleteItem((int)v.getTag());
+            }
         }
     };
 
@@ -88,6 +110,9 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
         @BindView(R.id.cb_finished)
         CheckBox finished;
+
+        @BindView(R.id.delete)
+        ImageView delete;
 
 
         public ViewHolder(View view){

@@ -13,4 +13,7 @@ public interface iTodoItemChangeListener {
      * @param position (0 based index)
      */
     void SaveTodoItem(TodoItem item, Integer position);
+
+    void DeleteItem(int position);
+
 }
