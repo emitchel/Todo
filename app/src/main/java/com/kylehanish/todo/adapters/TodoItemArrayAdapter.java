@@ -45,15 +45,6 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_todo, parent, false);
-
-//        view.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Log.d("TodoItemArrayAdapter", "onLongClick: ");
-//                mListener.ItemClicked(v);
-//                return false;
-//            }
-//        });
         return new ViewHolder(view, mListener);
     }
 

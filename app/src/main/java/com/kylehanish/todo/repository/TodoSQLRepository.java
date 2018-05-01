@@ -78,21 +78,6 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
     }
 
 
-
-
-//    public boolean insertData(String tableName,ContentValues values){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        long result = db.insert(tableName, null, values);
-//        if (result == -1){
-//            Log.d(TAG, "failed to save data!");
-//            return false;
-//        }else{
-//            Log.d(TAG, "save data successful");
-//            return true;
-//        }
-//    }
-
-
     private ContentValues getContentValuesFromTodoItem(TodoItem item){
         ContentValues values = new ContentValues();
         if(item.getID() > 0){
@@ -111,41 +96,6 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
         values.put(COL_TAG,item.getTag());
         return values;
     }
-
-
-//
-//    public List<TodoItem> GetTodoListItems(String selection){
-//        SQLiteDatabase db  = this.getReadableDatabase();  //ID | DESCRIPTION | COMPLETED | PRIORITY | CREATED ON | LAST UPDATED ON | TAG
-//
-//        Cursor cursor = db.query(TABLE, columns,
-//                null, null, null, null, null);
-//
-//        List<TodoItem> items = new ArrayList<>();
-//
-//
-//        if (cursor.moveToFirst()){
-//            while (!cursor.isAfterLast()) {
-//                TodoItem todoItem = new TodoItem();
-//                todoItem.setID(cursor.getInt(0));
-//                todoItem.setDescription(cursor.getString(1));
-//                int completed = cursor.getInt(2);
-//                todoItem.setCompleted(completed == 1);
-//
-//                todoItem.setCreatedOn(TryParseStringToDate(cursor.getString(4)));
-//                todoItem.setLastEditedOn(TryParseStringToDate(cursor.getString(5)));
-//
-//                todoItem.setTag(cursor.getString(6));
-//                items.add(todoItem);
-//
-//                cursor.moveToNext();
-//            }
-//        }
-//
-//        return items;
-//    }
-
-
-
 
     private List<TodoItem> BuildTodoItems(Cursor cursor){
         List<TodoItem> items = new ArrayList<>();

@@ -94,17 +94,16 @@ public class TodoDialogFragment extends DialogFragment {
 
     }
 
-
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
-            mListener = (iTodoItemChangeListener) context;
+            mListener = (iTodoItemChangeListener) getActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
+            throw new ClassCastException(getActivity().toString()
                     + " must implement iTodoItemChangeListener");
         }
+
     }
 
 

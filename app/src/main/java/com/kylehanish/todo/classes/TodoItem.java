@@ -74,8 +74,10 @@ public class TodoItem implements Serializable, Parcelable {
     public TodoItem(){}
 
     private TodoItem(Parcel in){
-        CreatedOn = FormatterUtils.TryParseStringToDate(in.readString());
-        LastEditedOn = FormatterUtils.TryParseStringToDate(in.readString());
+        long tmpDate = in.readLong();
+        CreatedOn = tmpDate == -1 ? null : new Date(tmpDate);
+        tmpDate = in.readLong();
+        LastEditedOn = tmpDate == -1 ? null : new Date(tmpDate);
         ID = in.readInt();
         Description = in.readString();
         Completed = in.readByte() == 1;
@@ -102,8 +104,8 @@ public class TodoItem implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(CreatedOn.toString());
-        dest.writeString(LastEditedOn.toString());
+        dest.writeLong(CreatedOn != null ? CreatedOn.getTime() : -1);
+        dest.writeLong(LastEditedOn != null ? LastEditedOn.getTime() : -1);
         dest.writeInt(ID);
         dest.writeString(Description);
         dest.writeByte((byte) (Completed ? 1 : 0));
