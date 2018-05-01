@@ -12,23 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kylehanish.todo.adapters.TodoItemArrayAdapter;
 import com.kylehanish.todo.classes.TodoItem;
 import com.kylehanish.todo.fragments.TodoDialogFragment;
 import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
-import com.kylehanish.todo.repository.TodoRepository;
+import com.kylehanish.todo.repository.TodoSQLRepository;
 import com.kylehanish.todo.repository.iTodoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,6 +30,8 @@ import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity implements iTodoItemChangeListener {
 
+
+    private static final String BUNDLE_TODO_ITEMS = "todo_items";
 
 //    Views
 
@@ -72,14 +67,12 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(getFragmentManager().findFragmentByTag(TodoDialogFragment.TAG) == null){
-                    new TodoDialogFragment().show(getFragmentManager(),TodoDialogFragment.TAG);
-                }
+                showEditorDialog(null);
             }
         });
 
-        mRepository = new TodoRepository();
-        mTodoItems = mRepository.getTodoItems(this);
+        mRepository = new TodoSQLRepository(mContext);
+        mTodoItems = mRepository.getTodoItems(null,null,null,null,null);
         mAdapter = new TodoItemArrayAdapter(this,R.layout.list_item_todo, mTodoItems,this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -90,33 +83,13 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
         super.onResume();
 
         if(mTodoItems == null){
-            mTodoItems = mRepository.getTodoItems(this);
+            mTodoItems = mRepository.getTodoItems(null,null,null,null,null);
             mAdapter.notifyDataSetChanged();
         }
-
         SetListVisibilty();
-
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     private void SetListVisibilty(){
-
         if(mTodoItems != null && mTodoItems.size() >0){
             if(recyclerView.getVisibility() == View.GONE){
                 emptyTodoList.setVisibility(View.GONE);
@@ -133,29 +106,48 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
 
 
     @Override
-    public void SaveTodoItem(TodoItem item, Integer position) {
-        if(position == null){
+    public void SaveTodoItem(TodoItem item, boolean isEdit) {
+        item = mRepository.SaveTodoItem(item);
+        if(!isEdit){
             //new item is being addeed
             mTodoItems.add(item);
-        }else{
-            //editing an existing item
-            mTodoItems.set(position,item);
         }
-
-        mRepository.saveTodoItems(mTodoItems,mContext);
         mAdapter.notifyDataSetChanged();
-
         SetListVisibilty();
-
     }
 
     @Override
-    public void DeleteItem(int position) {
-        if(mTodoItems.size() > 0 && position >= 0 && position < mTodoItems.size() ){
-            mTodoItems.remove(position);
-            mAdapter.notifyDataSetChanged();
+    public void DeleteItem(int position, int itemID) {
+        if(mTodoItems.size() > 0 && position >= 0 && position < mTodoItems.size()){
+            boolean deleted = mRepository.DeleteTodoItem(itemID);
+            if(deleted){
+                mTodoItems.remove(position);
+                mAdapter.notifyDataSetChanged();
 
-            SetListVisibilty();
+                SetListVisibilty();
+            }
         }
     }
+
+    @Override
+    public void EditItem(TodoItem item) {
+        showEditorDialog(item);
+    }
+
+    private void showEditorDialog(TodoItem item){
+
+        if(getFragmentManager().findFragmentByTag(TodoDialogFragment.TAG) == null){
+            TodoDialogFragment dialogFragment = new TodoDialogFragment();
+
+            if(item != null){
+                Bundle args = new Bundle();
+                args.putParcelable(TodoDialogFragment.BUNDLE_TODO_ITEM, item);
+                dialogFragment.setArguments(args);
+            }
+
+            dialogFragment.show(getFragmentManager(),TodoDialogFragment.TAG);
+        }
+    }
+
+
 }

@@ -28,11 +28,10 @@ public class ScrollingFABBehavior extends FloatingActionButton.Behavior {
         return (axes == ViewCompat.SCROLL_AXIS_VERTICAL) ||  super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type);
     }
 
-
     @Override
     public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull FloatingActionButton child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
-
+        Log.d(TAG, "onNestedScroll: ");
         if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
 
             child.hide(new FloatingActionButton.OnVisibilityChangedListener() {

@@ -11,6 +11,10 @@ import java.util.List;
  */
 
 public interface iTodoRepository {
-    List<TodoItem> getTodoItems(Context context);
-    void saveTodoItems(List<TodoItem> todoItems, Context context);
+    List<TodoItem> getTodoItems(String selection,
+                                String[] selectionArgs, String groupBy, String having,
+                                String orderBy);
+    TodoItem SaveTodoItem(TodoItem item);
+    boolean DeleteTodoItem(int ID);
+    TodoItem GetTodoItem(int ID);
 }

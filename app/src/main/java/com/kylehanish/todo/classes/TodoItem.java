@@ -1,5 +1,10 @@
 package com.kylehanish.todo.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.kylehanish.todo.utility.FormatterUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,7 +12,7 @@ import java.util.Date;
  * Created by Kyle Hanish on 4/29/18.
  */
 
-public class TodoItem implements Serializable{
+public class TodoItem implements Serializable, Parcelable {
 
 
     public int getID() {
@@ -50,13 +55,58 @@ public class TodoItem implements Serializable{
         LastEditedOn = lastEditedOn;
     }
 
+    public String getTag() {
+        return Tag;
+    }
+
+    public void setTag(String tag) {
+        Tag = tag;
+    }
+
+
     private Date CreatedOn;
     private Date LastEditedOn;
     private int ID;
     private String Description;
     private boolean Completed;
+    private String Tag;
 
     public TodoItem(){}
 
+    private TodoItem(Parcel in){
+        CreatedOn = FormatterUtils.TryParseStringToDate(in.readString());
+        LastEditedOn = FormatterUtils.TryParseStringToDate(in.readString());
+        ID = in.readInt();
+        Description = in.readString();
+        Completed = in.readByte() == 1;
+        Tag = in.readString();
+    }
 
+
+    public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
+        @Override
+        public TodoItem createFromParcel(Parcel in) {
+            return new TodoItem(in);
+        }
+
+        @Override
+        public TodoItem[] newArray(int size) {
+            return new TodoItem[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(CreatedOn.toString());
+        dest.writeString(LastEditedOn.toString());
+        dest.writeInt(ID);
+        dest.writeString(Description);
+        dest.writeByte((byte) (Completed ? 1 : 0));
+        dest.writeString(Tag);
+    }
 }

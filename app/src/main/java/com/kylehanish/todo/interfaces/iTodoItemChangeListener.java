@@ -1,5 +1,7 @@
 package com.kylehanish.todo.interfaces;
 
+import android.view.View;
+
 import com.kylehanish.todo.classes.TodoItem;
 
 /**
@@ -7,13 +9,10 @@ import com.kylehanish.todo.classes.TodoItem;
  */
 
 public interface iTodoItemChangeListener {
-    /**
-     *
-     * @param item
-     * @param position (0 based index)
-     */
-    void SaveTodoItem(TodoItem item, Integer position);
+    void SaveTodoItem(TodoItem item, boolean isEdit);
 
-    void DeleteItem(int position);
+    void DeleteItem(int position, int itemID);
+
+    void EditItem(TodoItem item);
 
 }

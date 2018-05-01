@@ -36,27 +36,34 @@ public class TodoDialogFragment extends DialogFragment {
 
 
     public static final String TAG = TodoDialogFragment.class.getSimpleName();
+    public static final String BUNDLE_TODO_ITEM = "todo_item";
 
     private Unbinder mUnbinder;
     private iTodoItemChangeListener mListener;
 
+    private TodoItem mCurrentItem;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        Bundle args = getArguments();
-        builder.setTitle(getString(R.string.add_new_item));
+        setBundleValues(getArguments(),savedInstanceState);
 
+        String titleString = mCurrentItem.getID() > 0 ? getString(R.string.edit_item) : getString(R.string.add_new_item);
+
+        builder.setTitle(titleString);
          builder.setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
              @Override
              public void onClick(DialogInterface dialog, int which) {
-                 TodoItem newItem = new TodoItem();
-                 newItem.setCreatedOn(new Date());
-                 newItem.setDescription(inputDescription.getText().toString());
+                 if(mCurrentItem.getID() == 0){
+                     mCurrentItem.setCreatedOn(new Date());
+                 }
+                 mCurrentItem.setDescription(inputDescription.getText().toString());
+                mCurrentItem.setCreatedOn(new Date());
 
-                 mListener.SaveTodoItem(newItem,null);
+
+                 mListener.SaveTodoItem(mCurrentItem,mCurrentItem.getID() > 0);
              }
          });
 
@@ -73,6 +80,22 @@ public class TodoDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+
+    private void setBundleValues(Bundle arguments, Bundle savedInstanceState){
+
+        if(arguments != null && arguments.containsKey(BUNDLE_TODO_ITEM)){
+            mCurrentItem = arguments.getParcelable(BUNDLE_TODO_ITEM);
+        }else if(savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_TODO_ITEM)){
+            mCurrentItem = savedInstanceState.getParcelable(BUNDLE_TODO_ITEM);
+        }else{
+            mCurrentItem = new TodoItem();
+        }
+
+
+    }
+
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -84,11 +107,6 @@ public class TodoDialogFragment extends DialogFragment {
         }
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
 
     @Override
     public void onStart() {
@@ -97,9 +115,32 @@ public class TodoDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        SetViewValues();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        mCurrentItem.setDescription(inputDescription.getText().toString());
+        outState.putParcelable(BUNDLE_TODO_ITEM,mCurrentItem);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+
+
+    private void SetViewValues(){
+        if(mCurrentItem != null){
+            inputDescription.setText(mCurrentItem.getDescription());
+            inputDescription.setSelection(inputDescription.getText().length());
+        }
     }
 
 
