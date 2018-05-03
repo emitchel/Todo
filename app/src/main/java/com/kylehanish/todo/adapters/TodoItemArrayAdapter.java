@@ -3,6 +3,7 @@ package com.kylehanish.todo.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,9 +18,11 @@ import android.widget.TextView;
 
 import com.kylehanish.todo.R;
 import com.kylehanish.todo.classes.TodoItem;
+import com.kylehanish.todo.fragments.PreviewDialogFragment;
 import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
 import com.kylehanish.todo.repository.iTodoRepository;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -89,7 +92,7 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
             if (mListener != null) {
                 TodoItem clickedItem = (TodoItem) buttonView.getTag();
                 clickedItem.setCompleted(isChecked);
-                clickedItem.setLastEditedOn(new Date());
+                clickedItem.setLastEditedOn(Calendar.getInstance().getTime());
                 mListener.SaveTodoItem(clickedItem, true);
             }
         }
@@ -128,7 +131,7 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
         }
     };
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.description)
         TextView textDescription;
 
@@ -147,6 +150,14 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
             super(view);
             ButterKnife.bind(this, view);
             mListener = itemChangeListener;
+
+            view.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.PreviewItem(v);
         }
 
     }

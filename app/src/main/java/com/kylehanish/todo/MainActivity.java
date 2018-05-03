@@ -1,5 +1,6 @@
 package com.kylehanish.todo;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -18,9 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kylehanish.todo.adapters.TodoItemArrayAdapter;
 import com.kylehanish.todo.classes.TodoItem;
+import com.kylehanish.todo.fragments.PreviewDialogFragment;
 import com.kylehanish.todo.fragments.TodoDialogFragment;
 import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
 import com.kylehanish.todo.repository.TodoSQLRepository;
@@ -77,7 +80,27 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
         mAdapter = new TodoItemArrayAdapter(this, R.layout.list_item_todo, mTodoItems, this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+//        recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                if (getFragmentManager().findFragmentByTag(PreviewDialogFragment.TAG) == null) {
+//                    PreviewDialogFragment dialogFragment = new PreviewDialogFragment();
+//
+//                    int position = recyclerView.getChildLayoutPosition(v);
+//                    TodoItem item = mTodoItems.get(position);
+//
+//                    if (item != null) {
+//                        Bundle args = new Bundle();
+//                        args.putParcelable(PreviewDialogFragment.BUNDLE_TODO_ITEM, item);
+//                        dialogFragment.setArguments(args);
+//                    }
+//
+//                    dialogFragment.show(getFragmentManager(), PreviewDialogFragment.TAG);
+//                }
+//
+//                return true;
+//            }
+//        });
     }
 
 
@@ -174,6 +197,25 @@ public class MainActivity extends AppCompatActivity implements iTodoItemChangeLi
     @Override
     public void EditItem(TodoItem item) {
         showEditorDialog(item);
+    }
+
+    @Override
+    public void PreviewItem(View view) {
+        if (getFragmentManager().findFragmentByTag(PreviewDialogFragment.TAG) == null) {
+            PreviewDialogFragment dialogFragment = new PreviewDialogFragment();
+
+            int position = recyclerView.getChildLayoutPosition(view);
+            TodoItem item = mTodoItems.get(position);
+
+            if (item != null) {
+                Bundle args = new Bundle();
+                args.putParcelable(PreviewDialogFragment.BUNDLE_TODO_ITEM, item);
+                dialogFragment.setArguments(args);
+            }
+
+            dialogFragment.show(getFragmentManager(), PreviewDialogFragment.TAG);
+        }
+
     }
 
     private void showEditorDialog(TodoItem item) {

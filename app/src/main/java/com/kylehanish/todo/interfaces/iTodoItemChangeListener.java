@@ -15,4 +15,6 @@ public interface iTodoItemChangeListener {
 
     void EditItem(TodoItem item);
 
+    void PreviewItem(View view);
+
 }

@@ -19,6 +19,7 @@ import com.kylehanish.todo.classes.TodoItem;
 import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -60,10 +61,10 @@ public class TodoDialogFragment extends DialogFragment {
              @Override
              public void onClick(DialogInterface dialog, int which) {
                  if(mCurrentItem.getID() == 0){
-                     mCurrentItem.setCreatedOn(new Date());
+                     mCurrentItem.setCreatedOn(Calendar.getInstance().getTime());
                  }
                  mCurrentItem.setDescription(inputDescription.getText().toString());
-                mCurrentItem.setCreatedOn(new Date());
+                mCurrentItem.setCreatedOn(Calendar.getInstance().getTime());
 
 
                  mListener.SaveTodoItem(mCurrentItem,mCurrentItem.getID() > 0);

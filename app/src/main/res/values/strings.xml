@@ -10,5 +10,8 @@
     <string name="empty_todo_list">Your To-Do List is empty</string>
     <string name="delete_this_item">Delete this To-Do Item?</string>
     <string name="delete">Delete</string>
+    <string name="close">Close</string>
+    <string name="created_on">Created On:</string>
+    <string name="todo_details">To-Do Item Details</string>
 
 </resources>

@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" android:enterFadeDuration="@android:integer/config_mediumAnimTime">
-    <item android:state_pressed="true" android:drawable="@color/colorAccentTwo"/>         <!--pressed -->
-    <item android:state_focused="true" android:drawable="@color/colorAccentTwo"/> <!-- focused -->
+    <item android:state_pressed="true" android:drawable="@color/colorAccentTwo">
+        <ripple
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:color="@color/ripple_material_light">     <!-- ripple color -->
+
+            <!-- for Floating Action Button -->
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/accent_material_dark"/>
+                </shape>
+            </item>
+
+        </ripple>
+
+
+    </item>        <!--pressed -->
+    <item android:state_focused="true" android:drawable="@color/colorAccentTwo">
+        <ripple
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:color="@color/ripple_material_light">     <!-- ripple color -->
+
+            <!-- for Floating Action Button -->
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/accent_material_dark"/>
+                </shape>
+            </item>
+
+        </ripple>
+    </item> <!-- focused -->
     <item android:drawable="@android:color/white"/> <!-- default -->
+
 </selector>

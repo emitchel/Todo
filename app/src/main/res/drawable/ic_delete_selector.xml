@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
-        <bitmap android:src="@drawable/ic_delete_black_24dp" android:tint="@android:color/black"/>
+        <bitmap android:src="@drawable/ic_delete_black_36dp" android:tint="@android:color/black"/>
     </item>
 
     <item android:state_pressed="true">
-        <bitmap android:src="@drawable/ic_delete_black_24dp" android:tint="@android:color/black"/>
+        <bitmap android:src="@drawable/ic_delete_black_36dp" android:tint="@android:color/black"/>
     </item>
 
     <item>
-        <bitmap android:src="@drawable/ic_delete_black_24dp" android:tint="@android:color/darker_gray"/>
+        <bitmap android:src="@drawable/ic_delete_black_36dp" android:tint="@android:color/darker_gray"/>
     </item>
 </selector>

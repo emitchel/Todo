@@ -12,7 +12,7 @@ import java.util.Locale;
 public class FormatterUtils {
 
     public static final String DATE_TIME_FORMAT_CONVERSION = "yyyy-mm-dd hh:mm:ss";
-    public static DateFormat dateFormatter = new SimpleDateFormat(DATE_TIME_FORMAT_CONVERSION, Locale.ENGLISH);
+    public static DateFormat dateFormatter = new SimpleDateFormat();
 
     public static Date TryParseStringToDate(String formattedDateString){
         try{
