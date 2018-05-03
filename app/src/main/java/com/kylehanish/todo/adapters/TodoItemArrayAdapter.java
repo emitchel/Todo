@@ -1,6 +1,8 @@
 package com.kylehanish.todo.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,7 +37,7 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
     private List<TodoItem> mItems;
     private iTodoItemChangeListener mListener;
 
-    public TodoItemArrayAdapter(Context context, int resource, List<TodoItem> items, iTodoItemChangeListener itemChangeListener){
+    public TodoItemArrayAdapter(Context context, int resource, List<TodoItem> items, iTodoItemChangeListener itemChangeListener) {
         mContext = context;
         mItems = items;
         mListener = itemChangeListener;
@@ -55,7 +57,7 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
         TodoItem currentItem = mItems.get(position);
 
-        if(currentItem == null){
+        if (currentItem == null) {
             return;
         }
 
@@ -74,47 +76,59 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
     @Override
     public int getItemCount() {
-        if(mItems != null){
+        if (mItems != null) {
             return mItems.size();
         }
         return 0;
     }
 
-    private CompoundButton.OnCheckedChangeListener checkboxOnClickListener = new CompoundButton.OnCheckedChangeListener(){
+    private CompoundButton.OnCheckedChangeListener checkboxOnClickListener = new CompoundButton.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(mListener != null){
+            if (mListener != null) {
                 TodoItem clickedItem = (TodoItem) buttonView.getTag();
                 clickedItem.setCompleted(isChecked);
                 clickedItem.setLastEditedOn(new Date());
-                mListener.SaveTodoItem(clickedItem,true);
+                mListener.SaveTodoItem(clickedItem, true);
             }
         }
     };
 
-    private View.OnClickListener DeleteOnClickListener = new View.OnClickListener(){
+    private View.OnClickListener DeleteOnClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            if(mListener != null){
-                TodoItem currentItem = (TodoItem) v.getTag();
-                mListener.DeleteItem(mItems.indexOf(currentItem),currentItem.getID());
-            }
+        public void onClick(final View v) {
+
+            new AlertDialog.Builder(mContext)
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mListener != null) {
+                                TodoItem currentItem = (TodoItem) v.getTag();
+                                mListener.DeleteItem(mItems.indexOf(currentItem), currentItem.getID());
+                            }
+                        }
+                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).setTitle(R.string.delete_this_item).show();
         }
     };
 
 
-    private View.OnClickListener EditOnClickListener = new View.OnClickListener(){
+    private View.OnClickListener EditOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(mListener != null){
+            if (mListener != null) {
                 TodoItem currentItem = (TodoItem) v.getTag();
                 mListener.EditItem(currentItem);
             }
         }
     };
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.description)
         TextView textDescription;
 
@@ -129,9 +143,9 @@ public class TodoItemArrayAdapter extends RecyclerView.Adapter<TodoItemArrayAdap
 
         private iTodoItemChangeListener mListener;
 
-        public ViewHolder(View view, iTodoItemChangeListener itemChangeListener){
+        public ViewHolder(View view, iTodoItemChangeListener itemChangeListener) {
             super(view);
-            ButterKnife.bind(this,view);
+            ButterKnife.bind(this, view);
             mListener = itemChangeListener;
         }
 

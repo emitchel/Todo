@@ -37,18 +37,20 @@ public class TodoDialogFragment extends DialogFragment {
 
     public static final String TAG = TodoDialogFragment.class.getSimpleName();
     public static final String BUNDLE_TODO_ITEM = "todo_item";
+    public static final String BUNDLE_DESRIPTION_VALUE = "et_description_value";
 
     private Unbinder mUnbinder;
     private iTodoItemChangeListener mListener;
 
     private TodoItem mCurrentItem;
+    private String mCurrentDecriptionValue;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        setBundleValues(getArguments(),savedInstanceState);
+        setValuesFromBundle(getArguments(),savedInstanceState);
 
         String titleString = mCurrentItem.getID() > 0 ? getString(R.string.edit_item) : getString(R.string.add_new_item);
 
@@ -81,17 +83,15 @@ public class TodoDialogFragment extends DialogFragment {
     }
 
 
-    private void setBundleValues(Bundle arguments, Bundle savedInstanceState){
+    private void setValuesFromBundle(Bundle arguments, Bundle savedInstanceState){
+        Bundle args = savedInstanceState != null ?  savedInstanceState : arguments;
 
-        if(arguments != null && arguments.containsKey(BUNDLE_TODO_ITEM)){
-            mCurrentItem = arguments.getParcelable(BUNDLE_TODO_ITEM);
-        }else if(savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_TODO_ITEM)){
-            mCurrentItem = savedInstanceState.getParcelable(BUNDLE_TODO_ITEM);
+        if(args != null){
+            mCurrentItem =  args.containsKey(BUNDLE_TODO_ITEM) ? (TodoItem) arguments.getParcelable(BUNDLE_TODO_ITEM) : new TodoItem();;
+            mCurrentDecriptionValue = args.containsKey(BUNDLE_DESRIPTION_VALUE) ? args.getString(BUNDLE_DESRIPTION_VALUE) : mCurrentItem.getDescription();
         }else{
             mCurrentItem = new TodoItem();
         }
-
-
     }
 
     @Override
@@ -122,9 +122,8 @@ public class TodoDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        mCurrentItem.setDescription(inputDescription.getText().toString());
         outState.putParcelable(BUNDLE_TODO_ITEM,mCurrentItem);
+        outState.putString(BUNDLE_DESRIPTION_VALUE,inputDescription.getText().toString());
     }
 
     @Override
@@ -133,12 +132,10 @@ public class TodoDialogFragment extends DialogFragment {
         mUnbinder.unbind();
     }
 
-
-
     private void SetViewValues(){
-        if(mCurrentItem != null){
-            inputDescription.setText(mCurrentItem.getDescription());
-            inputDescription.setSelection(inputDescription.getText().length());
+        if(mCurrentDecriptionValue != null){
+            inputDescription.setText(mCurrentDecriptionValue);
+            inputDescription.setSelection(mCurrentDecriptionValue.length());
         }
     }
 

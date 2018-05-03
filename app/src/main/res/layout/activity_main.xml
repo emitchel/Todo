@@ -39,10 +39,4 @@
         android:text="@string/empty_todo_list"
         android:visibility="gone"/>
 
-    <android.support.design.widget.FloatingActionButton
-        app:layout_behavior=".events.ScrollingFABBehavior"
-        android:id="@+id/fab"
-        style="@style/AppTheme.FloatingActionButton"
-        android:src="@drawable/ic_add_white_24px" />
-
 </android.support.design.widget.CoordinatorLayout>

@@ -97,8 +97,8 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
         return values;
     }
 
-    private List<TodoItem> BuildTodoItems(Cursor cursor){
-        List<TodoItem> items = new ArrayList<>();
+    private ArrayList<TodoItem> BuildTodoItems(Cursor cursor){
+        ArrayList<TodoItem> items = new ArrayList<>();
 
         if (cursor != null &&  cursor.moveToFirst()){
 
@@ -150,7 +150,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
     }
 
     @Override
-    public List<TodoItem> getTodoItems(String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
+    public ArrayList<TodoItem> getTodoItems(String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         Cursor cursor = ReadableDB().query(TABLE, null, selection, selectionArgs, groupBy, having, orderBy);
         return BuildTodoItems(cursor);
     }

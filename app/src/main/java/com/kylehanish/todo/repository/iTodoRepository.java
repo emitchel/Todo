@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.kylehanish.todo.classes.TodoItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,9 +12,9 @@ import java.util.List;
  */
 
 public interface iTodoRepository {
-    List<TodoItem> getTodoItems(String selection,
-                                String[] selectionArgs, String groupBy, String having,
-                                String orderBy);
+    ArrayList<TodoItem> getTodoItems(String selection,
+                                     String[] selectionArgs, String groupBy, String having,
+                                     String orderBy);
     TodoItem SaveTodoItem(TodoItem item);
     boolean DeleteTodoItem(int ID);
     TodoItem GetTodoItem(int ID);
