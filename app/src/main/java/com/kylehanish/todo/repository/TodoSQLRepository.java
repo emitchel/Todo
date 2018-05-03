@@ -5,18 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.kylehanish.todo.classes.TodoItem;
 import com.kylehanish.todo.utility.FormatterUtils;
 
-import java.io.WriteAbortedException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Kyle Hanish on 4/29/18.
@@ -24,11 +18,11 @@ import java.util.Locale;
 
 public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoRepository{
     private static final String DATABASE_NAME = "sample_database";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TAG = TodoSQLRepository.class.getSimpleName();
 
     //  ID | DESCRIPTION | COMPLETED | PRIORITY | CREATED ON | LAST UPDATED ON | TAG
-    public static final String TABLE = "table_todo";
+    public static final String TABLE_NAME = "table_todo";
     public static final String COL_ID = "col_id";
     public static final String COL_DESCRIPTION = "col_description";
     public static final String COL_COMPLETED = "col_completed";
@@ -39,7 +33,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
 
     public static final String TODO_ITEM_ID_SELECTOR = COL_ID + " =?" ;
 
-    public static final String DB_CREATE = "CREATE TABLE " + TABLE + "(" + COL_ID + " INTEGER NOT NULL PRIMARY KEY, "
+    public static final String DB_CREATE = "CREATE TABLE " + TABLE_NAME + "(" + COL_ID + " INTEGER NOT NULL PRIMARY KEY, "
             + COL_DESCRIPTION + " TEXT, " + COL_COMPLETED + " BIT, " + COL_PRIORITY + " TEXT, " + COL_CREATEDON + " TEXT, "
             + COL_LASTUPDATEDON+ " TEXT, " + COL_TAG + " TEXT " + ")";
 
@@ -65,7 +59,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + DB_CREATE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
@@ -86,11 +80,11 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
         values.put(COL_DESCRIPTION,item.getDescription());
         values.put(COL_COMPLETED,item.isCompleted());
         if(item.getCreatedOn() != null){
-            values.put(COL_CREATEDON, FormatterUtils.GetFormattedDate(item.getCreatedOn()));
+            values.put(COL_CREATEDON, FormatterUtils.GetSQLFormattedDate(item.getCreatedOn()));
         }
 
         if(item.getLastEditedOn() != null){
-            values.put(COL_LASTUPDATEDON, FormatterUtils.GetFormattedDate(item.getLastEditedOn()));
+            values.put(COL_LASTUPDATEDON, FormatterUtils.GetSQLFormattedDate(item.getLastEditedOn()));
         }
 
         values.put(COL_TAG,item.getTag());
@@ -131,7 +125,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
 
 
     private TodoItem AddNewItem(TodoItem item){
-        long result = WriteableDB().insert(TABLE, null, getContentValuesFromTodoItem(item));
+        long result = WriteableDB().insert(TABLE_NAME, null, getContentValuesFromTodoItem(item));
         if (result != -1){
                return GetTodoItem((int)result);
         }
@@ -141,7 +135,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
 
     private TodoItem UpdateItem(TodoItem item){
         if(item.getID() > 0){
-            int result = WriteableDB().update(TABLE,getContentValuesFromTodoItem(item),TODO_ITEM_ID_SELECTOR,new String[] {String.valueOf(item.getID())});
+            int result = WriteableDB().update(TABLE_NAME,getContentValuesFromTodoItem(item),TODO_ITEM_ID_SELECTOR,new String[] {String.valueOf(item.getID())});
             if(result > 0){ //successfully updated
                 return GetTodoItem(item.getID());
             }
@@ -151,7 +145,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
 
     @Override
     public ArrayList<TodoItem> getTodoItems(String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
-        Cursor cursor = ReadableDB().query(TABLE, null, selection, selectionArgs, groupBy, having, orderBy);
+        Cursor cursor = ReadableDB().query(TABLE_NAME, null, selection, selectionArgs, groupBy, having, orderBy);
         return BuildTodoItems(cursor);
     }
 
@@ -167,7 +161,7 @@ public class TodoSQLRepository extends SQLiteOpenHelper implements iTodoReposito
     @Override
     public boolean DeleteTodoItem(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return WriteableDB().delete(TABLE,TODO_ITEM_ID_SELECTOR,new String[] {String.valueOf(ID)}) > 0;
+        return WriteableDB().delete(TABLE_NAME,TODO_ITEM_ID_SELECTOR,new String[] {String.valueOf(ID)}) > 0;
     }
 
     @Override

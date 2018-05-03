@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.kylehanish.todo.R;
 import com.kylehanish.todo.classes.TodoItem;
 import com.kylehanish.todo.interfaces.iTodoItemChangeListener;
+import com.kylehanish.todo.utility.FormatterUtils;
 
 import java.util.Date;
 
@@ -107,7 +108,9 @@ public class PreviewDialogFragment extends DialogFragment {
 
     private void SetViewValues() {
         previewText.setText(mCurrentItem.getDescription());
-        createdOnDate.setText(mCurrentItem.getCreatedOn().toString());
+        if(createdOnDate != null){
+            createdOnDate.setText(FormatterUtils.GetDisplayDateFormat(mCurrentItem.getCreatedOn()));
+        }
     }
 
 
