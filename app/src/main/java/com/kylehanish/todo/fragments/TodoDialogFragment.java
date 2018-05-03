@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.kylehanish.todo.R;
@@ -79,7 +80,10 @@ public class TodoDialogFragment extends DialogFragment {
          setCancelable(false);
 
         builder.setView(getActivity().getLayoutInflater().inflate(R.layout.view_add_todo,null));
-        return builder.create();
+
+        Dialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        return dialog;
     }
 
 
